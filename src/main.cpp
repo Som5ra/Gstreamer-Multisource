@@ -8,10 +8,15 @@ using namespace std;
 
 
 
+// timestamp
+// [Sombra] -> https://stackoverflow.com/questions/47793422/how-to-use-use-the-gst-app-src-push-buffer-manually-with-custom-event
 
 int main()
 {
-
+    /*
+    gst-launch-1.0 -v v4l2src device=/dev/video0 ! video/x-raw,format=YUY2,width=640,height=480,framerate=30/1 ! queue ! fpsdisplaysink video-sink=glimagesink
+    gst-launch-1.0 -v filesrc location=../1.mp4 ! decodebin name=dec ! videoconvert  ! capsfilter caps="video/x-raw, format=BGR"  ! queue ! fpsdisplaysink video-sink=glimagesink
+    */
     WrapperConfig config = {
         main_stream_config: {
             name: "main_stream",
@@ -22,7 +27,7 @@ int main()
         video_streams_config: {
             VideoStreamConfig {
                 name: "video-1",
-                gst_pipeline_str: "filesrc location=1.mp4 ! decodebin ! videoconvert ! capsfilter caps=\"video/x-raw, format=BGR\" ! identity sync=true"
+                gst_pipeline_str: "v4l2src device=/dev/video0 ! videoconvert ! video/x-raw,format=BGR,width=640,height=480,framerate=30/1"
             },
             // VideoStreamConfig {
             //     name: "video-2",
@@ -34,7 +39,6 @@ int main()
 
     GstWrapper gst_wrapper(config);
     spdlog::info("Exiting");
-
 
 
     // GstElement *pipeline;

@@ -133,6 +133,15 @@ GstWrapper::GstWrapper(WrapperConfig config)
 
     SPDLOG_INFO("Setting playing state...");
     gst_element_set_state(this->main_pipeline, GST_STATE_PLAYING);
+
+    this->bus = gst_element_get_bus(this->main_pipeline);
+    this->msg = gst_bus_timed_pop_filtered(this->bus, GST_CLOCK_TIME_NONE, static_cast<GstMessageType>(GST_MESSAGE_ERROR | GST_MESSAGE_EOS));
+    if (this->msg != NULL) {
+        SPDLOG_ERROR("Error or EOS received: {}", GST_MESSAGE_TYPE_NAME(this->msg));
+        gst_message_unref(this->msg);
+    }
+    gst_object_unref(this->bus);
+    gst_element_set_state(this->main_pipeline, GST_STATE_NULL);
 }
 
 GstWrapper::~GstWrapper()

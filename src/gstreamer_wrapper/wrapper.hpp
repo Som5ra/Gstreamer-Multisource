@@ -101,7 +101,8 @@ class GstWrapper
 
         GstElement* main_pipeline;
         GstClock* gst_clock;
-
+        GstBus *bus;
+        GstMessage *msg;
 
         MultiSinksElement* main_stream_elements;
         vector<VideoStreamElement*> multi_streams_elements;
